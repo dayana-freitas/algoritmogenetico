@@ -1,0 +1,19 @@
+Variáveis:
+double rmse = 0, fxIdeal = 0, fx = 0, x = 0, a = 0, b = 0, c = 0, d = 0;
+
+Função ideal:
+fx = -0.3 + 0.1 * x - 0.5 * x ^ 2 + 0.4 * x ^ 3 
+
+Função a ser ajustada:
+fx = - a * x +  b * x - c * x ^ 2 + d * x ^ 3 
+
+void gerarDominio()
+
+Função custo:
+
+while(i <= 100) {
+        soma = soma + i;
+        i++;
+}
+
+rmse = sqrt()
