@@ -4,6 +4,7 @@
         "cmath": "c",
         "iterator": "c",
         "xmemory": "c",
-        "xutility": "c"
+        "xutility": "c",
+        "projeto_v3c": "c"
     }
 }
