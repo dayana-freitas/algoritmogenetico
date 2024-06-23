@@ -1,6 +1,9 @@
 {
     "C_Cpp.errorSquiggles": "disabled",
     "files.associations": {
-        "cmath": "c"
+        "cmath": "c",
+        "iterator": "c",
+        "xmemory": "c",
+        "xutility": "c"
     }
 }
