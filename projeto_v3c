@@ -4,34 +4,34 @@
 #include <locale.h>
 #include <time.h>
 
-int tamanho_populacao =       4; // Tamanho da população que será gerada (Sempre números pares)
-int intervalo_inicial =      -1; // Intervalo do domínio de f(x)
-int intervalo_final =         1;
+int tamanho_populacao =       10; // Tamanho da população que será gerada (Sempre números pares)
+int intervalo_inicial =      -5; // Intervalo do domínio de f(x)
+int intervalo_final =         5;
 double taxa_mutacao_dominio = 1; // Taxa na qual vai ser gerado o domínio de f(x) indo de intervalo_inicial até intervalo_final
 
 double* gerarDominio(int quant_itens_dominio, double *vetor_dominio);
 double calcularCusto(double coeficiente_a, double coeficiente_b, double coeficiente_c, double coeficiente_d, int quant_itens_dominio, double *vetor_dominio);
 double** inicializarPopulacao(int quant_itens_dominio, double *dominio);
-int* selecionarPais(int* indice, double *custo, int *selecao, int tamanho_populacao);
-double** crossover(double* pai1, double* pai2, double* filho1, double* filho2, int tamanho_populacao);
+int* selecionarPais(int* indice, double *custo, int *selecao, int tam_populacao);
+double** crossover(double* pai1, double* pai2, double* filho1, double* filho2, int tam_populacao);
 
 int main() {
     srand(time(NULL)); // Inicializa o gerador de números aleatórios com uma semente baseada no tempo atual
     setlocale(LC_ALL, NULL); // Configurações de localidade
 
     int condicao = 0; // Enquanto condição for zero, o loop executará. Quando for um o valor ideal para os parametros da função foram encontrado ou a execução chegou ao limite
-
+    int geracao = 0;
     printf("\n\n Algoritmo genético para ajuste de coeficientes da função f(x) = -a + bx - cx² + dx³ \n");
 
-    do {
-        int quant_itens_dominio = (intervalo_final - intervalo_inicial) / taxa_mutacao_dominio + 1;
-        int indice[tamanho_populacao];
-        int selecao[tamanho_populacao];
-        double custo[tamanho_populacao];
-        double vetor_dominio[quant_itens_dominio];
-        double*  dominio = gerarDominio(quant_itens_dominio, vetor_dominio); // Vetor dominio[] recebe o retorno da função gerarDominio
-        double** populacao = inicializarPopulacao(quant_itens_dominio, dominio); // vetor populacao[][4] recebe o retorno da funcao inicializarPopulacao
+    int quant_itens_dominio = (intervalo_final - intervalo_inicial) / taxa_mutacao_dominio + 1;
+    int indice[tamanho_populacao];
+    int selecao[tamanho_populacao];
+    double custo[tamanho_populacao];
+    double vetor_dominio[quant_itens_dominio];
+    double*  dominio = gerarDominio(quant_itens_dominio, vetor_dominio); // Vetor dominio[] recebe o retorno da função gerarDominio
+    double** populacao = inicializarPopulacao(quant_itens_dominio, dominio); // vetor populacao[][4] recebe o retorno da funcao inicializarPopulacao
 
+    do {
         // Cálculo dos custos
         printf("\n\n Calculando o custo de cada cromossomo ...");
         for (int i = 0; i < tamanho_populacao; i++){
@@ -51,7 +51,8 @@ int main() {
                 break;
             }
         }
-
+        if (condicao == 1) break;        
+        
         printf("\n\n Esta geração não possui coeficientes ideais para ajustar a função. Uma nova geração será criada!!! \n");
 
         // Seleção dos pais
@@ -98,15 +99,14 @@ int main() {
                 printf(" [ %.6f ] ", populacao[i][j]);
             }
         }
-        
-        // Libera memória alocada para a população
-        for (int i = 0; i < tamanho_populacao; i++) {
-            free(populacao[i]);
-        }
-        free(populacao);
         condicao = 0;
-    } while (condicao == 0);
-    
+        geracao++;
+    } while (condicao == 0 && geracao <= 10);
+    // Libera memória alocada para a população
+    for (int i = 0; i < tamanho_populacao; i++) {
+        free(populacao[i]);
+    }
+    free(populacao);
     return 0;
 }
 
@@ -159,7 +159,7 @@ double** inicializarPopulacao(int quant_itens_dominio, double *dominio) {
     int cromossomo = 0;
 
     // Inicializa população com valores fornecidos pelo usuário
-    // while (cromossomo < tamanho_populacao) {
+    // while (cromossomo < tam_populacao) {
     //     printf(" Digite o valor do coeficiente a : ");
     //     scanf("%lf", &coeficiente_a);
     //     populacao[cromossomo][0] = coeficiente_a;
@@ -213,30 +213,30 @@ double** inicializarPopulacao(int quant_itens_dominio, double *dominio) {
     return populacao;
 }
 
-int* selecionarPais(int* indice, double *custo, int *selecao, int tamanho_populacao)
+int* selecionarPais(int* indice, double *custo, int *selecao, int tam_populacao)
 {
     double soma_custo = 0;
-    for (int i = 0; i < tamanho_populacao; i++) {
+    for (int i = 0; i < tam_populacao; i++) {
         soma_custo += custo[i];
     }
     
-    double probabilidades[tamanho_populacao];
-    for (int i = 0; i < tamanho_populacao; i++) {
+    double probabilidades[tam_populacao];
+    for (int i = 0; i < tam_populacao; i++) {
         probabilidades[i] = custo[i] / soma_custo;
         // printf("\n Probabilidades: %f", probabilidades[i]);
     }
     
-    double roleta_cumulativa[tamanho_populacao];
+    double roleta_cumulativa[tam_populacao];
     double acumulado = 0;
-    for (int i = 0; i < tamanho_populacao; i++) {
+    for (int i = 0; i < tam_populacao; i++) {
         acumulado += probabilidades[i];
         roleta_cumulativa[i] = acumulado;
         // printf("\n Roleta Cumulativa: %f", roleta_cumulativa[i]);
     }
     
-    for (int i = 0; i < tamanho_populacao; i++) {
+    for (int i = 0; i < tam_populacao; i++) {
         double r = (double)rand() / RAND_MAX;
-        for (int j = 0; j < tamanho_populacao; j++) {
+        for (int j = 0; j < tam_populacao; j++) {
             if (r <= roleta_cumulativa[j]) {
                 selecao[i] = indice[j];
                 // printf("\n Seleção: %d", selecao[i]);
@@ -247,10 +247,10 @@ int* selecionarPais(int* indice, double *custo, int *selecao, int tamanho_popula
     return selecao;
 }
 
-double** crossover(double* pai1, double* pai2, double* filho1, double* filho2, int tamanho_populacao)
+double** crossover(double* pai1, double* pai2, double* filho1, double* filho2, int tam_populacao)
 {
     // Alocação de memória para a variável filhos
-    double** filhos = (double**)malloc(tamanho_populacao * sizeof(double*));
+    double** filhos = (double**)malloc(tam_populacao * sizeof(double*));
     for (int i = 0; i < 2; i++) {
         filhos[i] = (double*)malloc(4 * sizeof(double));
     }
