@@ -241,11 +241,13 @@ int* selecionarPais(int* indice, double* custo, int* selecao)
 
     for (int i = 0; i < TAMANHO_POPULACAO; i++) {
         double r = (double)rand() / RAND_MAX;
-        for (int j = 0; j < TAMANHO_POPULACAO; j++) {
+        int j = 0;
+        while(j < TAMANHO_POPULACAO) {
             if (r <= roleta_cumulativa[j]) {
                 selecao[i] = indice[j];
-                break;
+                j =  TAMANHO_POPULACAO;
             }
+            j++;
         }
     }
     return selecao;
