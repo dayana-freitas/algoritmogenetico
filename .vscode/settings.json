@@ -6,7 +6,10 @@
     "xmemory": "c",
     "xutility": "c",
     "projeto_v3c": "c",
-    "projeto_v4": "c"
+    "projeto_v4": "c",
+    "projeto_v5": "c",
+    "projeto_v6": "c",
+    "projeto_final": "c"
   },
   "C_Cpp_Runner.cCompilerPath": "gcc",
   "C_Cpp_Runner.cppCompilerPath": "g++",
